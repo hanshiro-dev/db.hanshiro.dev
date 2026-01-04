@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HanshiroDB | Technical Specification</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- RESET & VARIABLES --- */
+        :root {
+            /* The Blueprint Palette */
+            --bg-white: #ffffff;
+            --bg-tech: #F5F7FA; /* Very light gray-blue for technical areas */
+            --text-primary: #121212;
+            --text-secondary: #546E7A;
+            
+            /* Accents */
+            --accent-orange: #FF5722; /* High visibility technical orange */
+            --accent-blue: #37474F;   /* Deep slate for structure */
+            --border-color: #CFD8DC;
+            --grid-line: rgba(84, 110, 122, 0.1);
+
+            /* Fonts */
+            --font-tech-header: 'Space Grotesk', sans-serif; /* Blocky, technical headers */
+            --font-body: 'Inter', sans-serif;                /* Highly readable body */
+            --font-code: 'JetBrains Mono', monospace;        /* Data Readouts */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--text-primary);
+            background-color: var(--bg-white);
+            line-height: 1.5;
+            /* Subtle background grid pattern */
+            background-image: 
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        h1, h2, h3, h4, .tech-label {
+            font-family: var(--font-tech-header);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.2s; }
+        ul { list-style: none; }
+
+        /* --- UTILITIES & COMPONENTS --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+        }
+
+        /* Buttons - Hard edges, technical look */
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.8rem;
+            font-family: var(--font-tech-header);
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            border: 2px solid transparent;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-orange);
+            color: white;
+            /* A slight technical cut on the corner */
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+        }
+        .btn-primary:hover { background-color: #E64A19; transform: translateY(-2px); }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--accent-blue);
+            border: 2px solid var(--accent-blue);
+        }
+        .btn-outline:hover { background-color: var(--accent-blue); color: white; }
+
+        .tech-label {
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            color: var(--accent-orange);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        /* Structural lines for sections */
+        .section-border-top { border-top: 2px solid var(--border-color); }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--bg-white);
+            border-bottom: 2px solid var(--accent-blue);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-tech-header);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .logo-mark { 
+            color: var(--accent-orange); 
+            font-family: var(--font-code);
+            border: 2px solid var(--accent-orange);
+            padding: 2px 6px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            font-family: var(--font-tech-header);
+            font-size: 0.85rem;
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+        .nav-links a:hover { color: var(--accent-orange); }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            padding: 8rem 0 6rem;
+            position: relative;
+            background-color: var(--bg-white);
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        /* Decorative crosshairs for technical feel */
+        .crosshair {
+            position: absolute;
+            width: 20px; height: 20px;
+            border: 1px solid var(--accent-blue);
+        }
+        .ch-tl { top: 20px; left: 20px; border-right: none; border-bottom: none; }
+        .ch-tr { top: 20px; right: 20px; border-left: none; border-bottom: none; }
+        .ch-bl { bottom: 20px; left: 20px; border-right: none; border-top: none; }
+        .ch-br { bottom: 20px; right: 20px; border-left: none; border-top: none; }
+
+        .hero-content {
+            max-width: 900px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+        .hero h1 span { color: var(--accent-orange); }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 650px;
+            margin-bottom: 3rem;
+            font-family: var(--font-body);
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+            align-items: center;
+        }
+
+        .install-command {
+            font-family: var(--font-code);
+            background: var(--bg-tech);
+            border: 2px solid var(--border-color);
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+            color: var(--accent-blue);
+        }
+        .install-command span { color: var(--accent-orange); }
+
+        .hero-specs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-top: 2px solid var(--border-color);
+            padding-top: 2rem;
+        }
+        .spec { border-left: 2px solid var(--accent-orange); padding-left: 1rem; }
+        .spec strong { display: block; font-size: 1.8rem; font-family: var(--font-code); color: var(--text-primary); }
+        .spec span { font-family: var(--font-tech-header); font-size: 0.8rem; color: var(--text-secondary); }
+
+        /* --- DEMO SECTION (The Technical Readout) --- */
+        .demo-section {
+            padding: 6rem 0;
+            background-color: var(--bg-white);
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 40% 60%;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .demo-text h2 { font-size: 2.5rem; margin-bottom: 1.5rem; }
+        .demo-text p { color: var(--text-secondary); margin-bottom: 2rem; }
+        .checklist li { margin-bottom: 0.8rem; font-family: var(--font-tech-header); font-size: 0.9rem; display: flex; align-items: center; gap: 10px;}
+        .checklist li::before { content: '[OK]'; color: var(--accent-orange); font-family: var(--font-code); font-size: 0.8rem;}
+
+        /* The Code Container - Looks like hardware */
+        .technical-readout {
+            background: var(--bg-tech);
+            border: 2px solid var(--accent-blue);
+            position: relative;
+            box-shadow: 10px 10px 0px var(--border-color); /* Hard shadow */
+        }
+        
+        .readout-header {
+            background: var(--accent-blue);
+            color: white;
+            padding: 0.5rem 1rem;
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            text-transform: uppercase;
+        }
+
+        .code-content {
+            padding: 2rem;
+            font-family: var(--font-code);
+            font-size: 0.85rem;
+            color: var(--accent-blue);
+            overflow-x: auto;
+            background-image: linear-gradient(var(--grid-line) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .k { color: var(--accent-orange); font-weight: bold; }
+        .s { color: #43A047; }
+        .c { color: #90A4AE; font-style: italic; }
+
+        /* --- FEATURES GRID (Modular Units) --- */
+        .features { padding: 6rem 0; background: var(--bg-white); border-top: 2px solid var(--accent-blue); }
+        .section-header { margin-bottom: 4rem; }
+        .section-header h2 { font-size: 2.5rem; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Feature cards looking like rack modules */
+        .module-card {
+            background: var(--bg-tech);
+            border: 2px solid var(--border-color);
+            padding: 2rem;
+            border-left: 4px solid var(--accent-orange); /* Thick orange left border */
+            transition: transform 0.2s;
+        }
+        .module-card:hover { transform: translateY(-5px); border-color: var(--accent-blue); }
+        .module-card h3 { margin: 1rem 0; font-size: 1.1rem; }
+        .module-card p { color: var(--text-secondary); font-size: 0.9rem; }
+        .module-icon {
+            font-family: var(--font-code);
+            color: var(--accent-orange);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            border: 1px solid var(--accent-orange);
+            padding: 5px 10px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--bg-tech);
+            color: var(--accent-blue);
+            padding: 4rem 0 2rem;
+            border-top: 2px solid var(--accent-blue);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-logo { 
+            font-family: var(--font-tech-header); 
+            font-size: 1.4rem; 
+            font-weight: 700; 
+            margin-bottom: 1rem; 
+            display: block;
+        }
+        .footer-col h4 { color: var(--text-primary); margin-bottom: 1.2rem; font-size: 0.9rem; }
+        .footer-col ul li { margin-bottom: 0.8rem; font-size: 0.9rem; font-family: var(--font-tech-header); }
+        .footer-col a:hover { color: var(--accent-orange); }
+
+        .copyright {
+            border-top: 2px solid var(--border-color);
+            padding-top: 2rem;
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .demo-grid { grid-template-columns: 1fr; }
+            .hero-stats { grid-template-columns: 1fr; gap: 1.5rem; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .hero-actions { flex-direction: column; align-items: flex-start;}
+            .install-command { width: 100%; text-align: center;}
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">
+                    <span class="logo-mark">HDB_</span> Hanshiro
+                </a>
+                <div class="nav-links">
+                    <a href="#specs">SPECIFICATIONS</a>
+                    <a href="#docs">DOCUMENTATION</a>
+                    <a href="https://github.com/hanshiro/db" target="_blank">GITHUB [1.2k★]</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="crosshair ch-tl"></div>
+            <div class="crosshair ch-tr"></div>
+            <div class="crosshair ch-bl"></div>
+            <div class="crosshair ch-br"></div>
+
+            <div class="hero-content">
+                <span class="tech-label">SYSTEM STATUS: OPERATIONAL // V0.1.0-ALPHA</span>
+                <h1>Stop Grepping.<br>Start Hunting.</h1>
+                <p>
+                    The open-source vector database engineered specifically for SecOps and forensics. 
+                    Standard DBs build recommenders. <strong>Hanshiro catches zero-days.</strong>
+                </p>
+                <div class="hero-actions">
+                    <a href="#" class="btn btn-primary">Get Started</a>
+                    <div class="install-command">
+                        $ npm install <span>hanshiro-core</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-specs">
+                <div class="spec">
+                    <span class="tech-label">LATENCY</span>
+                    <strong>&lt;50ms</strong>
+                    <span>HOT-PATH INDEXING</span>
+                </div>
+                <div class="spec">
+                    <span class="tech-label">STORAGE</span>
+                    <strong>WORM</strong>
+                    <span>IMMUTABLE LEDGER</span>
+                </div>
+                <div class="spec">
+                    <span class="tech-label">EMBEDDINGS</span>
+                    <strong>POLYGLOT</strong>
+                    <span>CODE & BINARY NATIVE</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <div class="container">
+            <div class="demo-grid">
+                <div class="demo-text">
+                    <span class="tech-label">MODULE: BEHAVIORAL ANALYSIS</span>
+                    <h2>Find Intent,<br>Not Keywords.</h2>
+                    <p>
+                        Signatures fail when code changes. Hanshiro bridges the gap with <strong>Hybrid Boolean-Vector Search</strong> and <strong>Behavioral Embeddings</strong>.
+                    </p>
+                    <ul class="checklist">
+                        <li><strong>INGEST:</strong> Raw logs, pcap, and binaries.</li>
+                        <li><strong>VECTORIZE:</strong> `CodeBERT_Sec` models threat behavior.</li>
+                        <li><strong>DETECT:</strong> Spot polymorphic attacks instantly.</li>
+                    </ul>
+                    <br>
+                    <a href="#" class="btn btn-outline">READ DOCUMENTATION</a>
+                </div>
+
+                <div class="technical-readout">
+                    <div class="readout-header">
+                        <span>INPUT: SUSPICIOUS_POWERSHELL.PS1</span>
+                        <span>STATUS: THREAT DETECTED</span>
+                    </div>
+                    <div class="code-content">
+<pre><code><span class="c"># Initiating Hanshiro Client connection to local ledger</span>
+client = hanshiro.Client(host=<span class="s">"localhost:8080"</span>, strict=<span class="k">True</span>)
+
+<span class="c"># 1. VECTORIZE // Generating Behavioral Embedding</span>
+vector = client.embed(suspicious_script, model=CodeBERT_Sec)
+
+<span class="c"># 2. HYBRID SEARCH // Boolean Pre-filter + ANN</span>
+results = client.search(
+    vector=vector,
+    limit=<span class="k">5</span>,
+    filter={
+        <span class="s">"severity"</span>: <span class="s">"critical"</span>,
+        <span class="s">"dest_port"</span>: [<span class="k">443</span>, <span class="k">8080</span>]
+    },
+    strategy=<span class="s">"hybrid_exact"</span>
+)
+
+<span class="k">print</span>(f<span class="s">"MATCH >>> {results[0].threat_family}"</span>)
+<span class="c"># OUTPUT >>> MATCH: CobaltStrike_Beacon_Variant_X (98.4%)</span></code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="specs">
+        <div class="container">
+            <div class="section-header">
+                <span class="tech-label">CORE ARCHITECTURE</span>
+                <h2>Velocity. Veracity. Vulnerability.</h2>
+                <p style="color: var(--text-secondary); max-width: 600px;">Solving the trilemma that generic vector databases ignore.</p>
+            </div>
+            <div class="grid">
+                <div class="module-card">
+                    <div class="module-icon">[⚡]</div>
+                    <h3>Hot-Path Vectorization</h3>
+                    <p>Security logs arrive in massive streams. Hanshiro prioritizes recent data in-memory for sub-second query availability. No batching delays.</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">[🛡️]</div>
+                    <h3>Adversarial Anti-Poisoning</h3>
+                    <p>Built-in outlier detection flags vectors that drift too far from tenant baseline during ingestion, preventing model poisoning.</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">[🕸️]</div>
+                    <h3>Graph-Vector Duality</h3>
+                    <p>Threats are networks. Query a vector and instantly retrieve the connected graph of users, IPs, and assets touched by the threat.</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">[🔒]</div>
+                    <h3>Crypto-Shredding TTL</h3>
+                    <p>Field-level encryption. When a TTL expires, the encryption key is deleted, rendering the data mathematically unrecoverable instantly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="#" class="footer-logo"><span style="color: var(--accent-orange)">HDB_</span> Hanshiro</a>
+                    <p style="font-size: 0.9rem;">The operating system for modern defense. Built for engineers who know that logs are more than just text.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>/ LINKAGES</h4>
+                    <ul>
+                        <li><a href="#">Hanshiro Core [OSS]</a></li>
+                        <li><a href="#">Enterprise Fortress</a></li>
+                        <li><a href="#">API Reference</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>/ COMMUNITY</h4>
+                    <ul>
+                        <li><a href="#">GitHub</a></li>
+                        <li><a href="#">Discord Channel</a></li>
+                        <li><a href="#">Engineering Blog</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2024 HANSHIRO INC. // APACHE 2.0 OPEN SOURCE LICENSE.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
